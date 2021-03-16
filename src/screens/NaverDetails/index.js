@@ -4,28 +4,19 @@ import { Dimensions, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 import { Button, Column, Image, Row, ScreenLoader, Typography } from '../../components';
 import { getNaverById } from '../../services/navers';
-import { format, formatDistanceToNow, differenceInCalendarYears } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
-import locale from 'date-fns/locale/pt-BR';
 
 const { width } = Dimensions.get('screen');
 
 const NaverDetails = ({ navigation, route }) => {
   const { id } = route.params;
 
-  const { data: naver, isLoading } = useQuery(['navers', id], getNaverById(id), {
-    cacheTime: 0,
-  });
+  const { data: naver, isLoading } = useQuery(['navers', id], getNaverById(id));
 
   if (isLoading) {
     return <ScreenLoader />;
   }
 
-  const { name, job_role, birthdate, admission_date, project } = naver;
-
-  const age = differenceInCalendarYears(new Date(), utcToZonedTime(birthdate, 'utc'));
-
-  const companyTime = formatDistanceToNow(utcToZonedTime(admission_date, 'utc'), { locale });
+  const { age, company_time, job_role, name, project } = naver;
 
   return (
     <ScrollView flex={1} showsHorizontalScrollIndicator={false}>
@@ -47,7 +38,7 @@ const NaverDetails = ({ navigation, route }) => {
           Tempo de empresa
         </Typography>
         <Typography fontSize="16px" mb="24px">
-          {companyTime}
+          {company_time}
         </Typography>
         <Typography fontSize="16px" fontWeight="bold" mb="4px">
           Projetos que participou
@@ -56,10 +47,12 @@ const NaverDetails = ({ navigation, route }) => {
           {project}
         </Typography>
         <Row mb="32px">
-          <Button variant="outlined" mr="16px">
+          <Button flex={1} variant="outlined" mr="16px">
             Excluir
           </Button>
-          <Button>Editar</Button>
+          <Button flex={1} onPress={() => navigation.navigate('NaverForm', { id })}>
+            Editar
+          </Button>
         </Row>
       </Column>
     </ScrollView>

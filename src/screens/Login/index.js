@@ -17,7 +17,7 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  const handleChangeFocus = name => () => {
+  const handleFocus = name => () => {
     control.fieldsRef.current[name]?.ref.focus();
   };
 
@@ -44,7 +44,8 @@ const Login = () => {
               label="E-mail"
               placeholder="E-mail"
               returnKeyType="next"
-              onChangeFocus={handleChangeFocus('password')}
+              onSubmitEditing={handleFocus('password')}
+              blurOnSubmit={false}
               error={errors.email?.message}
               mb="32px"
               {...props}
@@ -67,7 +68,7 @@ const Login = () => {
             />
           )}
         />
-        <Button onPress={handleSubmit(handleLogin)} isLoading={formState.isSubmitting}>
+        <Button width={1} onPress={handleSubmit(handleLogin)} isLoading={formState.isSubmitting}>
           Entrar
         </Button>
       </Column>

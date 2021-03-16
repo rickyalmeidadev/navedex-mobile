@@ -1,14 +1,177 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { func, shape, string } from 'prop-types';
-import { Column, Typography } from '../../components';
+import { Alert } from 'react-native';
+import { useQuery, useQueryClient } from 'react-query';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { format } from 'date-fns-tz';
+import { utcToZonedTime } from 'date-fns-tz';
+import { Button, ScreenLoader, ScrollView, TextField, Typography } from '../../components';
+import { createNaver, getNaverById, updateNaverById } from '../../services/navers';
+import { naverSchema } from '../../helpers';
 
 const NaverForm = ({ navigation, route }) => {
   const { id } = route.params ?? {};
 
+  const queryClient = useQueryClient();
+
+  const { control, errors, formState, handleSubmit, reset } = useForm({
+    defaultValues: {
+      name: '',
+      job_role: '',
+      birthdate: '',
+      admission_date: '',
+      project: '',
+      url: '',
+    },
+    resolver: yupResolver(naverSchema),
+  });
+
+  const { isFetching } = useQuery(['navers', id], getNaverById(id), {
+    enabled: Boolean(id),
+    onSuccess: ({ admission_date, birthdate, job_role, name, project, url }) => {
+      const rest = { job_role, name, project, url };
+
+      reset({
+        admission_date: format(utcToZonedTime(admission_date, 'utc'), 'dd/MM/yyyy'),
+        birthdate: format(utcToZonedTime(birthdate, 'utc'), 'dd/MM/yyyy'),
+        ...rest,
+      });
+    },
+  });
+
+  useEffect(() => {
+    control.fieldsRef.current.name?.ref.focus();
+  }, [control.fieldsRef]);
+
+  const handleFocus = name => () => {
+    control.fieldsRef.current[name]?.ref.focus();
+  };
+
+  const onSubmit = async data => {
+    try {
+      if (id) {
+        await updateNaverById(id, data);
+      } else {
+        await createNaver(data);
+      }
+
+      queryClient.invalidateQueries('navers');
+
+      navigation.navigate('NaversList');
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
+
+  if (isFetching) {
+    return <ScreenLoader />;
+  }
+
   return (
-    <Column>
-      <Typography>NaverForm - {id ?? 'Novo'}</Typography>
-    </Column>
+    <ScrollView showsVerticalScrollIndicator={false} flex={1} px="16px">
+      <Typography alignSelf="center" fontSize="22px" fontWeight="bold" mt="32px" mb="24px">
+        {id ? 'Editar' : 'Adicionar'} naver
+      </Typography>
+      <Controller
+        name="name"
+        control={control}
+        render={props => (
+          <TextField
+            autoCorrect={false}
+            label="Nome"
+            placeholder="Jon Snow"
+            mb="32px"
+            onSubmitEditing={handleFocus('job_role')}
+            blurOnSubmit={false}
+            error={errors.name?.message}
+            {...props}
+          />
+        )}
+      />
+      <Controller
+        name="job_role"
+        control={control}
+        render={props => (
+          <TextField
+            autoCorrect={false}
+            label="Cargo"
+            placeholder="Rei do Norte"
+            mb="32px"
+            onSubmitEditing={handleFocus('birthdate')}
+            blurOnSubmit={false}
+            error={errors.job_role?.message}
+            {...props}
+          />
+        )}
+      />
+      <Controller
+        name="birthdate"
+        control={control}
+        render={props => (
+          <TextField
+            type="date"
+            label="Data de nascimento"
+            placeholder="dd/mm/aaaa"
+            mb="32px"
+            onSubmitEditing={handleFocus('admission_date')}
+            blurOnSubmit={false}
+            error={errors.birthdate?.message}
+            {...props}
+          />
+        )}
+      />
+      <Controller
+        name="admission_date"
+        control={control}
+        render={props => (
+          <TextField
+            type="date"
+            label="Data de admissão"
+            placeholder="dd/mm/aaaa"
+            mb="32px"
+            onSubmitEditing={handleFocus('project')}
+            blurOnSubmit={false}
+            error={errors.admission_date?.message}
+            {...props}
+          />
+        )}
+      />
+      <Controller
+        name="project"
+        control={control}
+        render={props => (
+          <TextField
+            autoCorrect={false}
+            label="Projetos que participou"
+            placeholder="Longa noite"
+            mb="32px"
+            onSubmitEditing={handleFocus('url')}
+            blurOnSubmit={false}
+            error={errors.project?.message}
+            {...props}
+          />
+        )}
+      />
+      <Controller
+        name="url"
+        control={control}
+        render={props => (
+          <TextField
+            autoCorrect={false}
+            label="URL da foto do naver"
+            placeholder="https://github.com/jonsnow.png"
+            mb="40px"
+            onSubmitEditing={handleSubmit(onSubmit)}
+            error={errors.url?.message}
+            {...props}
+          />
+        )}
+      />
+      <Button onPress={handleSubmit(onSubmit)} isLoading={formState.isSubmitting} mb="40px">
+        Salvar
+      </Button>
+    </ScrollView>
   );
 };
 
@@ -16,11 +179,11 @@ NaverForm.propTypes = {
   navigation: shape({
     navigate: func,
   }),
-  route: {
-    params: {
+  route: shape({
+    params: shape({
       id: string,
-    },
-  },
+    }),
+  }),
 };
 
 export default NaverForm;

@@ -22,17 +22,17 @@ const HomeDrawer = () => {
 
   return (
     <Navigator drawerContent={props => <DrawerContent {...props} onLogout={handleLogout} />}>
-      <Screen name="Home" component={NaverStack} options={{ drawerLabel: 'Navers' }} />
+      <Screen
+        name="Home"
+        component={NaverStack}
+        options={{ drawerLabel: 'Navers', swipeEnabled: false }}
+      />
     </Navigator>
   );
 };
 
 const DrawerContent = ({ onLogout, ...props }) => (
-  <DrawerContentScrollView
-    style={{}}
-    contentContainerStyle={styles.contentContainerStyle}
-    {...props}
-  >
+  <DrawerContentScrollView contentContainerStyle={styles.contentContainerStyle} {...props}>
     <TouchableOpacity
       style={styles.headerLeftButton}
       activeOpacity={0.7}

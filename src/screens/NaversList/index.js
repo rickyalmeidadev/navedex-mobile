@@ -27,7 +27,6 @@ const NaversList = ({ navigation }) => {
         <FlatList
           numColumns={2}
           columnWrapperStyle={styles.columnWrapperStyle}
-          nestedScrollEnabled
           ListEmptyComponent={() => (
             <Column flex={1} alignItems="center" mt="24px">
               <Typography>Nada por enquanto...</Typography>
@@ -35,7 +34,9 @@ const NaversList = ({ navigation }) => {
           )}
           data={navers}
           keyExtractor={({ id }) => id}
-          renderItem={({ item: naver }) => <NaverItem {...naver} />}
+          renderItem={({ item: naver, index }) => (
+            <NaverItem padding={index % 2 === 0 ? 'pr' : 'pl'} {...naver} />
+          )}
         />
       )}
     </Column>
@@ -44,7 +45,7 @@ const NaversList = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   columnWrapperStyle: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
   },
 });
 

@@ -7,12 +7,13 @@ import { Column, Typography } from '..';
 
 const TextField = (
   {
+    autoCapitalize,
+    autoCorrect,
     blurOnSubmit,
     error,
     label,
     onBlur,
     onChange,
-    onChangeFocus,
     onSubmitEditing,
     placeholder,
     returnKeyType,
@@ -28,13 +29,15 @@ const TextField = (
         {label}
       </Typography>
       <Input
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
         placeholder={placeholder}
-        blurOnSubmit={onChangeFocus ? false : blurOnSubmit}
+        blurOnSubmit={blurOnSubmit}
         onBlur={onBlur}
         onChangeText={onChange}
-        onSubmitEditing={onChangeFocus ?? onSubmitEditing}
+        onSubmitEditing={onSubmitEditing}
         error={error}
-        value={value}
+        value={withMask(type, value)}
         ref={ref}
         {...getTypeProps(type)}
       />
@@ -49,14 +52,30 @@ const TextField = (
 
 const getTypeProps = type => {
   if (type === 'email') {
-    return { keyboardType: 'email-address' };
+    return { autoCapitalize: 'none', autoCorrect: false, keyboardType: 'email-address' };
   }
 
   if (type === 'password') {
     return { secureTextEntry: true };
   }
 
+  if (type === 'date') {
+    return { autoCapitalize: 'none', autoCorrect: false, keyboardType: 'numeric', maxLength: 10 };
+  }
+
   return {};
+};
+
+const withMask = (type, value) => {
+  if (type === 'date') {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '$1/$2')
+      .replace(/(\d{2})(\d)/, '$1/$2')
+      .replace(/(\d{4})\d+?$/, '$1');
+  }
+
+  return value;
 };
 
 const Input = styled.TextInput.attrs(({ placeholderTextColor }) => ({
@@ -76,12 +95,13 @@ const Input = styled.TextInput.attrs(({ placeholderTextColor }) => ({
 const ForwardedRefTextField = forwardRef(TextField);
 
 ForwardedRefTextField.propTypes = {
+  autoCapitalize: string,
+  autoCorrect: bool,
   blurOnSubmit: bool,
   error: string,
   label: string,
   onBlur: func,
   onChange: func,
-  onChangeFocus: func,
   onSubmitEditing: func,
   placeholder: string,
   returnKeyType: string,

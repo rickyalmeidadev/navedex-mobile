@@ -28,7 +28,6 @@ const TouchableOpacity = styled.TouchableOpacity.attrs({
   align-items: center;
   background-color: ${({ variant }) => (variant === 'outlined' ? 'white' : 'black')};
   border: 1px solid black;
-  flex: 1;
   height: 40px;
   justify-content: center;
 
