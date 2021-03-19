@@ -29,3 +29,9 @@ export const updateNaverById = async (id, payload) => {
 
   return response;
 };
+
+export const deleteNaverById = async id => {
+  const response = await api.delete(`/navers/${id}`);
+
+  return response;
+};

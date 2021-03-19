@@ -1,16 +1,41 @@
 import React from 'react';
 import { func, shape, string } from 'prop-types';
 import { Dimensions, ScrollView } from 'react-native';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { Button, Column, Image, Row, ScreenLoader, Typography } from '../../components';
-import { getNaverById } from '../../services/navers';
+import { useAlert } from '../../hooks';
+import { deleteNaverById, getNaverById } from '../../services/navers';
 
 const { width } = Dimensions.get('screen');
 
 const NaverDetails = ({ navigation, route }) => {
   const { id } = route.params;
 
+  const alert = useAlert();
+  const queryClient = useQueryClient();
+
   const { data: naver, isLoading } = useQuery(['navers', id], getNaverById(id));
+
+  const handleDelete = () => {
+    alert({
+      type: 'confirm',
+      title: 'Excluir naver',
+      description: 'Tem certeza que deseja excluir este naver?',
+      onConfirm: async () => {
+        await deleteNaverById(id);
+
+        alert({
+          type: 'info',
+          title: 'Naver excluído',
+          description: 'Naver excluído com sucesso!',
+          onConfirm: () => {
+            queryClient.invalidateQueries('navers');
+            navigation.navigate('NaversList');
+          },
+        });
+      },
+    });
+  };
 
   if (isLoading) {
     return <ScreenLoader />;
@@ -47,10 +72,10 @@ const NaverDetails = ({ navigation, route }) => {
           {project}
         </Typography>
         <Row mb="32px">
-          <Button flex={1} variant="outlined" mr="16px">
+          <Button flex={1} variant="outlined" mr="16px" icon="delete" onPress={handleDelete}>
             Excluir
           </Button>
-          <Button flex={1} onPress={() => navigation.navigate('NaverForm', { id })}>
+          <Button flex={1} onPress={() => navigation.navigate('NaverForm', { id })} icon="edit">
             Editar
           </Button>
         </Row>

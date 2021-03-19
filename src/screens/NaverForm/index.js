@@ -9,10 +9,12 @@ import { utcToZonedTime } from 'date-fns-tz';
 import { Button, ScreenLoader, ScrollView, TextField, Typography } from '../../components';
 import { createNaver, getNaverById, updateNaverById } from '../../services/navers';
 import { naverSchema } from '../../helpers';
+import { useAlert } from '../../hooks';
 
 const NaverForm = ({ navigation, route }) => {
   const { id } = route.params ?? {};
 
+  const alert = useAlert();
   const queryClient = useQueryClient();
 
   const { control, errors, formState, handleSubmit, reset } = useForm({
@@ -56,9 +58,15 @@ const NaverForm = ({ navigation, route }) => {
         await createNaver(data);
       }
 
-      queryClient.invalidateQueries('navers');
-
-      navigation.navigate('NaversList');
+      alert({
+        type: 'info',
+        title: id ? 'Naver editado' : 'Naver adicionado',
+        description: id ? 'Naver editado com sucesso!' : 'Naver adicionado com sucesso!',
+        onConfirm: () => {
+          queryClient.invalidateQueries('navers');
+          navigation.navigate('NaversList');
+        },
+      });
     } catch (error) {
       Alert.alert(error.message);
     }
@@ -144,7 +152,7 @@ const NaverForm = ({ navigation, route }) => {
           <TextField
             autoCorrect={false}
             label="Projetos que participou"
-            placeholder="Longa noite"
+            placeholder="A Longa Noite"
             mb="32px"
             onSubmitEditing={handleFocus('url')}
             blurOnSubmit={false}

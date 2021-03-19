@@ -2,11 +2,35 @@ import React from 'react';
 import { number, string } from 'prop-types';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Feather';
+import { useQueryClient } from 'react-query';
 import { Column, Image, Row, Typography } from '..';
+import Icon from '../../assets/icons';
+import { useAlert } from '../../hooks';
+import { deleteNaverById } from '../../services/navers';
 
 const NaverItem = ({ id, job_role, name, padding, url }) => {
+  const alert = useAlert();
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
+
+  const handleDelete = () => {
+    alert({
+      type: 'confirm',
+      title: 'Excluir naver',
+      description: 'Tem certeza que deseja excluir este naver?',
+      onConfirm: async () => {
+        await deleteNaverById(id);
+
+        queryClient.invalidateQueries('navers');
+
+        alert({
+          type: 'info',
+          title: 'Naver excluído',
+          description: 'Naver excluído com sucesso!',
+        });
+      },
+    });
+  };
 
   return (
     <Column flex={0.5} mb="16px" {...{ [padding]: '8px' }}>
@@ -19,14 +43,14 @@ const NaverItem = ({ id, job_role, name, padding, url }) => {
         <Typography mb="8px">{job_role}</Typography>
       </TouchableOpacity>
       <Row>
-        <TouchableOpacity activeOpacity={0.7}>
-          <Icon name="trash-2" color="black" size={24} />
+        <TouchableOpacity activeOpacity={0.7} onPress={handleDelete}>
+          <Icon name="delete" />
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => navigation.navigate('NaverForm', { id })}
         >
-          <Icon name="edit-2" color="black" size={24} />
+          <Icon name="edit" ml="8px" />
         </TouchableOpacity>
       </Row>
     </Column>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Icon from 'react-native-vector-icons/Feather';
 import { NaverDetails, NaverForm, NaversList } from '../../screens';
 import { Image } from '../../components';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/images/logo.png';
+import Icon from '../../assets/icons';
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -14,7 +14,7 @@ const NaverStack = () => (
       cardStyle: styles.cardStyle,
       headerLeft: props => (
         <TouchableOpacity style={styles.headerLeftButton} activeOpacity={0.7} {...props}>
-          <Icon name="chevron-left" color="black" size={24} />
+          <Icon name="arrow-left" />
         </TouchableOpacity>
       ),
       headerRight: () => <View />,
@@ -34,7 +34,7 @@ const NaverStack = () => (
             onPress={() => navigation.openDrawer()}
             {...props}
           >
-            <Icon name="menu" color="black" size={24} />
+            <Icon name="menu" />
           </TouchableOpacity>
         ),
       })}

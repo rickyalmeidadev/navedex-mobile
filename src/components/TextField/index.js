@@ -22,33 +22,31 @@ const TextField = (
     ...props
   },
   ref,
-) => {
-  return (
-    <Column width={1} {...props}>
-      <Typography color={error ? 'red' : 'black'} fontWeight="bold" mb="4px">
-        {label}
+) => (
+  <Column width={1} {...props}>
+    <Typography color={error ? 'red' : 'black'} fontWeight="bold" mb="4px">
+      {label}
+    </Typography>
+    <Input
+      autoCapitalize={autoCapitalize}
+      autoCorrect={autoCorrect}
+      placeholder={placeholder}
+      blurOnSubmit={blurOnSubmit}
+      onBlur={onBlur}
+      onChangeText={onChange}
+      onSubmitEditing={onSubmitEditing}
+      error={error}
+      value={withMask(type, value)}
+      ref={ref}
+      {...getTypeProps(type)}
+    />
+    {error && (
+      <Typography color="red" mt="4px">
+        {error}
       </Typography>
-      <Input
-        autoCapitalize={autoCapitalize}
-        autoCorrect={autoCorrect}
-        placeholder={placeholder}
-        blurOnSubmit={blurOnSubmit}
-        onBlur={onBlur}
-        onChangeText={onChange}
-        onSubmitEditing={onSubmitEditing}
-        error={error}
-        value={withMask(type, value)}
-        ref={ref}
-        {...getTypeProps(type)}
-      />
-      {error && (
-        <Typography color="red" mt="4px">
-          {error}
-        </Typography>
-      )}
-    </Column>
-  );
-};
+    )}
+  </Column>
+);
 
 const getTypeProps = type => {
   if (type === 'email') {

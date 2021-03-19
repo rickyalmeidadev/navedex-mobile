@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import { color, flexbox, layout, position, space, typography } from 'styled-system';
+import { color, flexbox, layout, position, space, typography, variant } from 'styled-system';
 import propTypes from '@styled-system/prop-types';
 
 const Typography = styled.Text`
@@ -9,7 +9,21 @@ const Typography = styled.Text`
   ${position}
   ${space}
   ${typography}
+
+  font-weight: normal;
+
+  ${variant({
+    prop: 'fontWeight',
+    variants: {
+      bold: { fontFamily: 'Montserrat-SemiBold' },
+      normal: { fontFamily: 'Montserrat-Regular' },
+    },
+  })}
 `;
+
+Typography.defaultProps = {
+  fontWeight: 'normal',
+};
 
 Typography.propTypes = {
   ...propTypes.color,

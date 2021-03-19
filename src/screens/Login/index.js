@@ -5,7 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Column, Image, TextField } from '../../components';
 import { useAuthentication } from '../../hooks';
 import { loginSchema } from '../../helpers';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/images/logo.png';
 
 const { height } = Dimensions.get('screen');
 

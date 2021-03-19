@@ -1,39 +1,68 @@
 import React, { createContext, useContext, useRef, useCallback, useState } from 'react';
-import { Column } from '../components';
+import { Alert } from '../components';
 
 const AlertContext = createContext(() => {});
 
+const defaultOptions = {
+  type: 'info',
+  title: 'Atenção',
+  message: 'Tem certeza?',
+  cancel: 'Cancelar',
+  confirm: 'Confirmar',
+  onConfirm: async () => {},
+};
+
 const AlertProvider = ({ children }) => {
-  const [current, setCurrent] = useState({ isOpen: false });
-  const [auxiliar, setAuxiliar] = useState({ isOpen: false });
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState(defaultOptions);
 
-  const ref = useRef(false);
+  const shouldPersist = useRef(false);
 
-  const alert = useCallback(data => {
-    if (ref.current) {
-      return setAuxiliar({ ...data, isOpen: true });
+  const alert = useCallback(providedOptions => {
+    setOptions({ ...defaultOptions, ...providedOptions });
+    setIsOpen(state => {
+      if (state) {
+        shouldPersist.current = true;
+      }
+      return true;
+    });
+  }, []);
+
+  const onCancel = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const onConfirm = useCallback(async () => {
+    if (typeof options.onConfirm === 'function') {
+      setIsLoading(true);
+      await options.onConfirm();
+      setIsLoading(false);
     }
 
-    ref.current = true;
+    if (!shouldPersist.current) {
+      setIsOpen(false);
+    }
 
-    setCurrent({ ...data, isOpen: true });
-  }, []);
+    shouldPersist.current = false;
+  }, [options]);
 
-  const handleCloseCurrent = useCallback(() => {
-    ref.current = false;
-
-    setCurrent(prev => ({ ...prev, isOpen: false }));
-  }, []);
-
-  const handleCloseAuxiliar = useCallback(() => {
-    setAuxiliar(prev => ({ ...prev, isOpen: false }));
-  }, []);
+  const { type, title, description, cancel, confirm } = options;
 
   return (
     <AlertContext.Provider value={alert}>
+      <Alert
+        isOpen={isOpen}
+        isLoading={isLoading}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        type={type}
+        title={title}
+        description={description}
+        cancel={cancel}
+        confirm={confirm}
+      />
       {children}
-      <Column {...current} onClose={handleCloseCurrent} />
-      <Column {...auxiliar} onClose={handleCloseAuxiliar} />
     </AlertContext.Provider>
   );
 };

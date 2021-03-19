@@ -1,3 +1,4 @@
+export { default as Alert } from './Alert';
 export { default as Button } from './Button';
 export { default as Column } from './Column';
 export { default as Image } from './Image';

@@ -5,10 +5,10 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/Feather';
 import NaverStack from './NaverStack';
 import { useAuthentication } from '../../hooks';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from '../../assets/icons';
 
 const { Navigator, Screen } = createDrawerNavigator();
 
@@ -38,7 +38,7 @@ const DrawerContent = ({ onLogout, ...props }) => (
       activeOpacity={0.7}
       onPress={() => props.navigation.closeDrawer()}
     >
-      <Icon name="x" color="black" size={24} />
+      <Icon name="close" />
     </TouchableOpacity>
     <DrawerItemList
       activeBackgroundColor="transparent"
