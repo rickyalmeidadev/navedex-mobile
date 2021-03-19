@@ -6,7 +6,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { format } from 'date-fns-tz';
 import { utcToZonedTime } from 'date-fns-tz';
-import { Button, ScreenLoader, ScrollView, TextField, Typography } from '../../components';
+import {
+  Button,
+  DatePicker,
+  ScreenLoader,
+  ScrollView,
+  TextField,
+  Typography,
+} from '../../components';
 import { createNaver, getNaverById, updateNaverById } from '../../services/navers';
 import { naverSchema } from '../../helpers';
 import { useAlert } from '../../hooks';
@@ -106,8 +113,6 @@ const NaverForm = ({ navigation, route }) => {
             label="Cargo"
             placeholder="Rei do Norte"
             mb="32px"
-            onSubmitEditing={handleFocus('birthdate')}
-            blurOnSubmit={false}
             error={errors.job_role?.message}
             {...props}
           />
@@ -117,14 +122,11 @@ const NaverForm = ({ navigation, route }) => {
         name="birthdate"
         control={control}
         render={props => (
-          <TextField
-            type="date"
+          <DatePicker
             label="Data de nascimento"
             placeholder="dd/mm/aaaa"
-            mb="32px"
-            onSubmitEditing={handleFocus('admission_date')}
-            blurOnSubmit={false}
             error={errors.birthdate?.message}
+            mb="32px"
             {...props}
           />
         )}
@@ -133,14 +135,11 @@ const NaverForm = ({ navigation, route }) => {
         name="admission_date"
         control={control}
         render={props => (
-          <TextField
-            type="date"
+          <DatePicker
             label="Data de admissão"
             placeholder="dd/mm/aaaa"
-            mb="32px"
-            onSubmitEditing={handleFocus('project')}
-            blurOnSubmit={false}
             error={errors.admission_date?.message}
+            mb="32px"
             {...props}
           />
         )}

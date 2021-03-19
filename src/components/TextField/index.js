@@ -10,6 +10,7 @@ const TextField = (
     autoCapitalize,
     autoCorrect,
     blurOnSubmit,
+    disabled,
     error,
     label,
     onBlur,
@@ -30,13 +31,14 @@ const TextField = (
     <Input
       autoCapitalize={autoCapitalize}
       autoCorrect={autoCorrect}
+      editable={!disabled}
       placeholder={placeholder}
       blurOnSubmit={blurOnSubmit}
       onBlur={onBlur}
       onChangeText={onChange}
       onSubmitEditing={onSubmitEditing}
       error={error}
-      value={withMask(type, value)}
+      value={value}
       ref={ref}
       {...getTypeProps(type)}
     />
@@ -57,23 +59,7 @@ const getTypeProps = type => {
     return { secureTextEntry: true };
   }
 
-  if (type === 'date') {
-    return { autoCapitalize: 'none', autoCorrect: false, keyboardType: 'numeric', maxLength: 10 };
-  }
-
   return {};
-};
-
-const withMask = (type, value) => {
-  if (type === 'date') {
-    return value
-      .replace(/\D/g, '')
-      .replace(/(\d{2})(\d)/, '$1/$2')
-      .replace(/(\d{2})(\d)/, '$1/$2')
-      .replace(/(\d{4})\d+?$/, '$1');
-  }
-
-  return value;
 };
 
 const Input = styled.TextInput.attrs(({ placeholderTextColor }) => ({
@@ -96,6 +82,7 @@ ForwardedRefTextField.propTypes = {
   autoCapitalize: string,
   autoCorrect: bool,
   blurOnSubmit: bool,
+  disabled: bool,
   error: string,
   label: string,
   onBlur: func,

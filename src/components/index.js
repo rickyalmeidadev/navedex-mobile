@@ -1,5 +1,6 @@
 export { default as Alert } from './Alert';
 export { default as Button } from './Button';
+export { default as DatePicker } from './DatePicker';
 export { default as Column } from './Column';
 export { default as Image } from './Image';
 export { default as Input } from './Input';
