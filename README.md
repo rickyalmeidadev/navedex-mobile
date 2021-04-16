@@ -26,6 +26,7 @@ O sistema consiste em aplicativo mobile com fluxo de autenticação e CRUD dos n
 - [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) - JavaScript (JS) is a lightweight, interpreted, or just-in-time compiled programming language with first-class functions.
 - [React-Native](https://reactnative.dev/) - React Native combines the best parts of native development with React, a best-in-class JavaScript library for building user interfaces.
 - [Styled Components](https://styled-components.com/) - Primitivos visuais para a idade do componente. Use os melhores bits de ES6 e CSS para estilizar seus aplicativos sem estresse.
+- [Styled System](https://styled-system.com/) - Styled System lets you quickly build custom UI components with constraint-based style props based on scales defined in your theme.
 - [React Query](https://react-query.tanstack.com/) - Performant and powerful data synchronization for React
 - [React Hook Form](https://react-hook-form.com/) - Performant, flexible and extensible forms with easy-to-use validation.
 - [Yup](https://www.npmjs.com/package/yup) - Yup is a JavaScript schema builder for value parsing and validation.
